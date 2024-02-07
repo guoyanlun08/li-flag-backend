@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 
-import { User } from '../entity/User';
+import { User } from '@/entity/User';
+import { TodoItem } from '@/entity/TodoItem';
 
 const AppDataSource = new DataSource({
   type: 'mysql',
@@ -10,7 +11,7 @@ const AppDataSource = new DataSource({
   password: '123456',
   database: 'li-flag',
   synchronize: true, // 和数据库同步，推荐是说只能在开发环境用(后期处理)
-  entities: [User],
+  entities: [User, TodoItem],
 });
 
 export default AppDataSource;

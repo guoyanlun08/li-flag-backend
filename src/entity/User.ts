@@ -1,14 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
-// todo: 模板，需要修改的
-@Entity()
+@Entity({ name: 'user' })
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn({ name: 'user_id' })
+  userID: number;
 
-  @Column()
-  firstName: string;
+  @Column({ name: 'password' })
+  password: string;
 
-  @Column()
-  lastName: string;
+  @Column({ name: 'nick_name' })
+  nickName: string;
+
+  @Column({ name: 'avatar_path' })
+  avatarPath: string;
 }
