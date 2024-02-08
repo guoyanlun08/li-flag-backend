@@ -17,7 +17,7 @@ async function bootstrap() {
   // 跨域中间件 ???
   app.use(bodyParser.json());
 
-  app.listen(3000);
+  app.listen(3020);
 }
 
 const appBoot = async () => {
