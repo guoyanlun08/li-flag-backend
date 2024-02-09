@@ -1,3 +1,5 @@
+import { Request, Response } from 'express';
+
 import UserService from '../service/user-service';
 import { controller, router } from '@/annotations';
 
@@ -6,9 +8,12 @@ const userService = new UserService();
 @controller({ path: '/user', name: '用户' })
 class UserController {
   @router({ method: 'post', path: '/login' })
-  public login(ctx) {
-    // const {} = ctx.request.query?????
-    // await userService().login
+  public async login(req: Request, res: Response) {
+    const { body: requestData } = req;
+
+    const result = await userService.login(requestData)
+
+    return result;
   }
 }
 
