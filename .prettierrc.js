@@ -8,5 +8,5 @@ module.exports = {
   arrowParens: 'always',
   insertPragma: false,
   requirePragma: false,
-  useTabs: false
+  useTabs: false,
 };

@@ -15,6 +15,15 @@ class UserController {
 
     return result;
   }
+
+  @router({ method: 'post', path: '/register' })
+  public async register(req: Request, res: Response) {
+    const { body: requestData } = req;
+
+    const result = await userService.register(requestData)
+
+    return result;
+  }
 }
 
 export default UserController;

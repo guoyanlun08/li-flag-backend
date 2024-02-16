@@ -4,9 +4,9 @@ import UserController from '@/modules/user/controller/user-controller';
 
 const router = express.Router();
 
+// todo: 会有个遍历处理，先临时调用先
 const userController = new UserController();
 
-// todo: 这里将会有通用方法处理，临时先处理调调接口先
 const userConMeta = Reflect.getMetadata('Controller', UserController);
 const methods = Reflect.ownKeys(UserController.prototype);
 methods.forEach((method) => {
@@ -17,11 +17,16 @@ methods.forEach((method) => {
     router[userRouMeta.method](`/api${userConMeta.path}${userRouMeta.path}`, async (req: Request, res: Response) => {
       const methodName = `${userConMeta.name} -> ${UserController.name} :: ${String(method)}`;
 
-      console.log(methodName);
-      const data = await userController[method](req, res);
+      console.log(methodName); // 必要打印的 log
 
-      // todo: 统一处理返回！！
-      return res.json({ data });
+      // 这里返回码常量定义, 错误处理应该还需要处理一下
+      // 成功返回应该也会有 msg
+      try {
+        const data = await userController[method](req, res);
+        return res.status(200).json({ code: 1, data });
+      } catch (error) {
+        return res.status(500).json({ code: 0, msg: error.message });
+      }
     });
   }
 });

@@ -1,37 +1,64 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 import { User } from '@/entity/User';
 
 class UserService {
   public async login(requestData) {
-    const { userID, password, nickName, avatarPath } = requestData;
-    const isExistedUser = await User.findOne({
-      where: { userID }
+    const { userID, password } = requestData;
+
+    const user = await User.findOne({
+      where: { userID },
     });
 
-    
-    if(!isExistedUser) {
-      this.register(requestData);
+    if (!user) {
+      throw new Error('账号不存在');
     }
-    console.log('----- 登录操作 -----');
-    
-    const user = new User();
 
+    // 检查密码是否匹配
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      throw new Error('账号密码不匹配');
+    }
 
+    user.lastOnlineTime = new Date();
+    await user.save();
+
+    const token = jwt.sign({ userID: user.userID }, 'login-token-key', {
+      expiresIn: '14 days',
+    });
+
+    return {
+      token,
+      user,
+    };
   }
-
+  /**
+   * 注册逻辑
+   */
   public async register(requestData) {
-    console.log('----- 注册操作 -----');
-    const { userID, password, nickName, avatarPath } = requestData;
-    const user = new User();
+    const { userID, password, repectPassword, nickName, avatarPath } = requestData;
 
-    // todo: password 校验
-    // todo: password 哈希化存储
+    const isExistedUser = await User.findOne({
+      where: { userID },
+    });
 
-    user.userID = userID;
-    user.password = password;
-    user.nickName = nickName;
-    user.avatarPath = avatarPath;
+    if (isExistedUser) {
+      throw new Error('账号已存在');
+    }
 
-    user.save();
+    if (password !== repectPassword) {
+      throw new Error('密码不一致');
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+    await User.save({
+      userID,
+      nickName,
+      avatarPath,
+      password: hashPassword,
+      lastOnlineTime: new Date(),
+    });
 
     return true;
   }

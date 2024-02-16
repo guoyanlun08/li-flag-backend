@@ -2,8 +2,9 @@ import 'reflect-metadata';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import router from './routes';
 import AppDataSource from './config/database';
+import authMiddleware from '@/middleware/authMiddleware';
+import router from './routes';
 
 async function initProperties() {
   await AppDataSource.initialize();
@@ -23,8 +24,9 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({ extended: false }));
   // 用来解析 post body json 格式数据
   app.use(bodyParser.json());
-  app.use('/', router);
+  app.use(authMiddleware);
 
+  app.use('/', router);
 
   app.listen(3020);
 }
