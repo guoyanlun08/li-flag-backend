@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { TodoItem } from '@/entity/TodoItem';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
   @PrimaryColumn({ name: 'user_id' })
-  userID: string;
+  userId: string;
 
   @Column({ name: 'password' })
   password: string;
@@ -22,4 +23,7 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn({ name: 'update_time' })
   updateTime: Date;
+
+  @OneToMany(() => TodoItem, (todoItem) => todoItem.user)
+  todoItems: TodoItem[];
 }

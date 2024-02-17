@@ -5,10 +5,10 @@ import { User } from '@/entity/User';
 
 class UserService {
   public async login(requestData) {
-    const { userID, password } = requestData;
+    const { userId, password } = requestData;
 
     const user = await User.findOne({
-      where: { userID },
+      where: { userId },
     });
 
     if (!user) {
@@ -24,7 +24,7 @@ class UserService {
     user.lastOnlineTime = new Date();
     await user.save();
 
-    const token = jwt.sign({ userID: user.userID }, 'login-token-key', {
+    const token = jwt.sign({ userId: user.userId }, 'login-token-key', {
       expiresIn: '14 days',
     });
 
@@ -37,10 +37,10 @@ class UserService {
    * 注册逻辑
    */
   public async register(requestData) {
-    const { userID, password, repectPassword, nickName, avatarPath } = requestData;
+    const { userId, password, repectPassword, nickName, avatarPath } = requestData;
 
     const isExistedUser = await User.findOne({
-      where: { userID },
+      where: { userId },
     });
 
     if (isExistedUser) {
@@ -53,7 +53,7 @@ class UserService {
 
     const hashPassword = await bcrypt.hash(password, 10);
     await User.save({
-      userID,
+      userId,
       nickName,
       avatarPath,
       password: hashPassword,

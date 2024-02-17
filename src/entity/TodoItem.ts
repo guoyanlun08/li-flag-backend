@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '@/entity/User';
 
 @Entity({ name: 'todo_item' })
 export class TodoItem {
@@ -13,4 +14,8 @@ export class TodoItem {
 
   @Column({ name: 'is_completed' })
   isCompleted: boolean;
+
+  @ManyToOne(() => User, (user) => user.todoItems)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }
