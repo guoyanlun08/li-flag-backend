@@ -37,7 +37,7 @@ class UserService {
    * 注册逻辑
    */
   public async register(requestData) {
-    const { userId, password, repectPassword, nickName, avatarPath } = requestData;
+    const { userId, password, repectPassword } = requestData;
 
     const isExistedUser = await User.findOne({
       where: { userId },
@@ -54,13 +54,14 @@ class UserService {
     const hashPassword = await bcrypt.hash(password, 10);
     await User.save({
       userId,
-      nickName,
-      avatarPath,
+      nickName: `用户${userId}`,
       password: hashPassword,
       lastOnlineTime: new Date(),
     });
 
-    return true;
+    return {
+      message: '注册成功',
+    };
   }
 }
 

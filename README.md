@@ -12,6 +12,10 @@
 
 4. npm start
 
+## 接口文档
+
+apipost 软件 -> 协助邀请: https://console.apipost.cn/linkinvitation?invitation_code=U33b679c3-6f00-4128-ad20-fefbef28761d
+
 ## 依赖介绍
 
 - typeORM: 操作数据库的 orm
