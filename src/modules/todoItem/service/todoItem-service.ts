@@ -5,9 +5,27 @@ class TodoItemService {
     type: 'paragraph',
     children: [{ text: '' }],
   };
-  public async addTodoItem(requestData) {
+
+  public async getTodoList(options: { module?: string; isCompleted?: number }) {
+    const { module, isCompleted } = options;
+
+    const whereCondition = {};
+    if (module) whereCondition['module'] = module;
+    if (!isNaN(isCompleted)) whereCondition['isCompleted'] = isCompleted;
+
+    const list = await TodoItem.find({
+      where: whereCondition,
+    });
+
+    return {
+      list,
+    };
+  }
+
+  public async addTodoItem(requestData: { module: string; order: number }) {
     try {
       const { module, order } = requestData;
+
       const newTodoItem = await TodoItem.create({
         module,
         order,
@@ -17,6 +35,7 @@ class TodoItemService {
       await newTodoItem.save();
 
       return {
+        id: newTodoItem.id,
         message: 'todoItem 创建成功',
       };
     } catch (error) {

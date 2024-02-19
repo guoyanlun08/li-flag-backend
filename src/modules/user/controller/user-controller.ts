@@ -11,7 +11,7 @@ class UserController {
   public async login(req: Request, res: Response) {
     const { body: requestData } = req;
 
-    const result = await userService.login(requestData)
+    const result = await userService.login(requestData);
 
     return result;
   }
@@ -20,7 +20,7 @@ class UserController {
   public async register(req: Request, res: Response) {
     const { body: requestData } = req;
 
-    const result = await userService.register(requestData)
+    const result = await userService.register(requestData);
 
     return result;
   }

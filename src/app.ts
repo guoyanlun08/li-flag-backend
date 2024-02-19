@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import express from 'express';
-import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import AppDataSource from './config/database';
 import authMiddleware from '@/middleware/authMiddleware';
@@ -20,11 +20,13 @@ async function bootstrap() {
   // 统一错误处理
   // -----------------------------------
 
-  // 用来解析 post body x-www-form-urlencoded 格式数据
-  app.use(bodyParser.urlencoded({ extended: false }));
   // 用来解析 post body json 格式数据
-  app.use(bodyParser.json());
-  app.use(authMiddleware);
+  app.use(express.json());
+  // 用来解析 post body x-www-form-urlencoded 格式数据
+  app.use(express.urlencoded({ extended: false }));
+  app.use(cors());
+
+  // app.use(authMiddleware);
 
   app.use('/', router);
 

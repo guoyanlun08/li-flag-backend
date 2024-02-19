@@ -12,15 +12,19 @@
 
 4. npm start
 
+## 规范
+
+- mysql 里没有 boolean 类型，建议使用 tinyint 处理
+- controller get 传参经处理传给 service；post 直接传 body
+
 ## 接口文档
 
-apipost 软件 -> 协助邀请: https://console.apipost.cn/linkinvitation?invitation_code=U33b679c3-6f00-4128-ad20-fefbef28761d
+apipost 软件 -> 协助邀请: https://console.apipost.cn/linkinvitation?invitation_code=U07f69371-a3ff-4427-8b6b-80f1bb4d0069
 
 ## 依赖介绍
 
 - typeORM: 操作数据库的 orm
 - mysql2: 数据库驱动
-- body-parser: 用来解析 request body 的内容
 - cors: 解决跨域
 - bcrypt: 密码加密和解密
 - jsonwebtoken: 登录时生成 token 下发

@@ -7,10 +7,17 @@ const todoItemService = new TodoItemService();
 
 @controller({ path: '/todoItem', name: '待办' })
 class TodoItemController {
-  // 获取 itemList，通过过滤条件，默认获取全部
-  @router({ method: 'get', path: '/getList' })
-  public async getItemListByParams(req: Request, res: Response) {
-    // await todoItemService.
+  // 获取 itemList
+  @router({ method: 'get', path: '/getTodoList' })
+  public async getTodoList(req: Request, res: Response) {
+    const { module, isCompleted } = req.query as any;
+
+    const result = await todoItemService.getTodoList({
+      module,
+      isCompleted: Number(isCompleted),
+    });
+
+    return result;
   }
 
   // 新增 todoitem

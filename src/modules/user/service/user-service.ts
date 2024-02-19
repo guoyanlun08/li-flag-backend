@@ -36,7 +36,7 @@ class UserService {
   /**
    * 注册逻辑
    */
-  public async register(requestData) {
+  public async register(requestData: { userId: string; password: string; repectPassword: string }) {
     const { userId, password, repectPassword } = requestData;
 
     const isExistedUser = await User.findOne({

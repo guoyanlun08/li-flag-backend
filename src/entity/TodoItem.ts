@@ -7,13 +7,13 @@ export class TodoItem extends BaseEntity {
   id: number;
 
   @Column({ name: 'module' })
-  module: string; // 应是枚举 'A' | 'B' | 'C' | 'D'
+  module: string; // 应是枚举 'A' | 'B' | 'C' | 'D' | ''
 
   @Column({ name: 'todo_value', type: 'text' })
   todoValue: string;
 
-  @Column({ name: 'is_completed', default: false })
-  isCompleted: boolean;
+  @Column({ name: 'is_completed', type: 'tinyint', default: 0, comment: '0 代表未完成，1 代表已完成' })
+  isCompleted: number;
 
   @Column({ name: 'order' })
   order: number;
