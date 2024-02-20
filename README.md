@@ -17,10 +17,6 @@
 - mysql 里没有 boolean 类型，建议使用 tinyint 处理
 - controller get 传参经处理传给 service；post 直接传 body
 
-## 接口文档
-
-apipost 软件 -> 协助邀请: https://console.apipost.cn/linkinvitation?invitation_code=U07f69371-a3ff-4427-8b6b-80f1bb4d0069
-
 ## 依赖介绍
 
 - typeORM: 操作数据库的 orm

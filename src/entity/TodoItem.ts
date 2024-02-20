@@ -7,7 +7,7 @@ export class TodoItem extends BaseEntity {
   id: number;
 
   @Column({ name: 'module' })
-  module: string; // 应是枚举 'A' | 'B' | 'C' | 'D' | ''
+  module: string; // 应是枚举 'A' | 'B' | 'C' | 'D'
 
   @Column({ name: 'todo_value', type: 'text' })
   todoValue: string;

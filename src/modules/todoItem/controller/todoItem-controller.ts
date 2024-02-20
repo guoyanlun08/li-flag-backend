@@ -31,6 +31,15 @@ class TodoItemController {
   }
 
   // 修改 item，item内容修改; 已完成; 切换 module; 改变 order
+  @router({ method: 'post', path: '/updateTodoItem' })
+  public async updateTodoItem(req: Request, res: Response) {
+    const { body: requsetData } = req;
+
+    const result = await todoItemService.updateTodoItem(requsetData);
+
+    return result;
+  }
+
   // 删除 item
 }
 
