@@ -51,11 +51,10 @@ class TodoItemService {
       where: { id },
     });
 
-    // todo: 前端request写好后, 务必测试这个传参。前端传参限制 json
     if (todoValue) {
       try {
         const updateTodoValue = JSON.parse(todoValue); // 验证是否 json
-        if (updateTodoValue.hasOwnProperty('type') || updateTodoValue.hasOwnProperty('children')) {
+        if (!updateTodoValue.hasOwnProperty('type') || !updateTodoValue.hasOwnProperty('children')) {
           throw new Error('todoValue 结构不对应，外层应只有 type 和 children');
         }
         todoItem.todoValue = todoValue;
