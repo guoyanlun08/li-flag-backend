@@ -75,6 +75,22 @@ class TodoItemService {
       message: `${id} todoItem 更新成功`,
     };
   }
+
+  public async deleteTodoItemById(id: number) {
+    try {
+      const { affected } = await TodoItem.delete(id);
+
+      if (!affected) {
+        throw new Error(`删除id: ${id} 不存在`);
+      }
+
+      return {
+        message: `id: ${id} 删除成功`,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 export default TodoItemService;

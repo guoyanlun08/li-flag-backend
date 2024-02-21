@@ -1,6 +1,6 @@
 # 前情
 
-.vscode 文件夹里可设置是否保存自动格式化，大部分文件最好都格式化处理。 要使用【Prettier - Code formatter】插件为格式化默认配置，才能生效~
+要使用【Prettier - Code formatter】插件为格式化默认配置，才能生效~
 
 ## 启动
 

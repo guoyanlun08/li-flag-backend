@@ -41,6 +41,14 @@ class TodoItemController {
   }
 
   // 删除 item
+  @router({ method: 'post', path: '/deleteTodoItemById' })
+  public async deleteTodoItemById(req: Request, res: Response) {
+    const { id } = req.body;
+
+    const result = await todoItemService.deleteTodoItemById(id);
+
+    return result;
+  }
 }
 
 export default TodoItemController;

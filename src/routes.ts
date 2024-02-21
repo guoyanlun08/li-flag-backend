@@ -38,6 +38,7 @@ function addRouter(Controller) {
           const data = await controller[method](req, res);
           return res.status(200).json({ code: 1, data });
         } catch (error) {
+          console.error(error.message);
           return res.status(500).json({ code: 0, msg: error.message });
         }
       });
