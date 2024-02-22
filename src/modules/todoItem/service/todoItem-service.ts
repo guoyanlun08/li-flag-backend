@@ -1,5 +1,8 @@
 import { TodoItem } from '@/entity/TodoItem';
+import MyError from '@/common/my-error';
 import { AddItemReqData, UpdateItemReqData } from '../types/index';
+
+import { HttpCode } from '@/common/http-code';
 
 class TodoItemService {
   static defaultValue = {
@@ -40,7 +43,7 @@ class TodoItemService {
         message: 'todoItem 创建成功',
       };
     } catch (error) {
-      throw new Error('新增 todoItem失败');
+      throw new MyError('新增 todoItem失败');
     }
   }
 
@@ -50,17 +53,22 @@ class TodoItemService {
     const todoItem = await TodoItem.findOne({
       where: { id },
     });
+    if (!todoItem) {
+      throw new MyError(`${id} todoItem不存在`, HttpCode.NOT_FOUND);
+    }
 
     if (todoValue) {
+      let updateTodoValue;
       try {
-        const updateTodoValue = JSON.parse(todoValue); // 验证是否 json
-        if (!updateTodoValue.hasOwnProperty('type') || !updateTodoValue.hasOwnProperty('children')) {
-          throw new Error('todoValue 结构不对应，外层应只有 type 和 children');
-        }
-        todoItem.todoValue = todoValue;
+        updateTodoValue = JSON.parse(todoValue);
       } catch (error) {
-        throw new Error(`todoValue error: ${error instanceof SyntaxError ? '传参不是 json' : error.message}`);
+        throw new MyError('todoValue error: 传参不是 json', HttpCode.BAD_REQUEST);
       }
+
+      if (!updateTodoValue.hasOwnProperty('type') || !updateTodoValue.hasOwnProperty('children')) {
+        throw new MyError('todoValue 结构不对应，外层应只有 type 和 children', HttpCode.BAD_REQUEST);
+      }
+      todoItem.todoValue = todoValue;
     }
 
     if (isCompleted !== undefined) todoItem.isCompleted = isCompleted;
@@ -77,19 +85,15 @@ class TodoItemService {
   }
 
   public async deleteTodoItemById(id: number) {
-    try {
-      const { affected } = await TodoItem.delete(id);
+    const { affected } = await TodoItem.delete(id);
 
-      if (!affected) {
-        throw new Error(`删除id: ${id} 不存在`);
-      }
-
-      return {
-        message: `id: ${id} 删除成功`,
-      };
-    } catch (error) {
-      throw new Error(error.message);
+    if (!affected) {
+      throw new MyError(`删除id: ${id} 不存在`);
     }
+
+    return {
+      message: `id: ${id} 删除成功`,
+    };
   }
 }
 

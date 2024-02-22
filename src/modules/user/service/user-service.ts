@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { User } from '@/entity/User';
+import MyError from '@/common/my-error';
 import { LoginReqData, RegisterReqData } from '../types/index';
 
 class UserService {
@@ -13,13 +14,13 @@ class UserService {
     });
 
     if (!user) {
-      throw new Error('账号不存在');
+      throw new MyError('账号不存在');
     }
 
     // 检查密码是否匹配
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      throw new Error('账号密码不匹配');
+      throw new MyError('账号密码不匹配');
     }
 
     user.lastOnlineTime = new Date();
@@ -45,11 +46,11 @@ class UserService {
     });
 
     if (isExistedUser) {
-      throw new Error('账号已存在');
+      throw new MyError('账号已存在');
     }
 
     if (password !== repectPassword) {
-      throw new Error('密码不一致');
+      throw new MyError('密码不一致');
     }
 
     const hashPassword = await bcrypt.hash(password, 10);

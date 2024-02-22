@@ -4,6 +4,8 @@ import cors from 'cors';
 
 import AppDataSource from './config/database';
 import authMiddleware from '@/middleware/authMiddleware';
+import errorHandlerMiddleware from '@/middleware/errorHandlerMiddleware';
+
 import router from './routes';
 
 async function initProperties() {
@@ -14,10 +16,7 @@ async function bootstrap() {
   const app = express();
 
   // -----------------------------------
-  // jwt中间件
   // 图片处理中间件
-  // 跨域中间件 ???
-  // 统一错误处理
   // -----------------------------------
 
   // 用来解析 post body json 格式数据
@@ -29,6 +28,7 @@ async function bootstrap() {
   // app.use(authMiddleware);
 
   app.use('/', router);
+  app.use(errorHandlerMiddleware);
 
   app.listen(3020);
 }

@@ -1,8 +1,12 @@
 import express, { Request, Response } from 'express';
 import glob from 'glob';
 
+import responseHandler from '@/utils/response-handler';
+import { HttpCode } from '@/common/http-code';
+
 const router = express.Router();
 const controllers = glob.sync('src/modules/**/*-controller.ts');
+const routeSet = new Set();
 
 async function init(controllers) {
   const mods = await Promise.all(
@@ -26,20 +30,30 @@ function addRouter(Controller) {
     const methodRouter = Reflect.getMetadata('Router', controller, String(method));
 
     if (methodRouter) {
-      // todo: 需要做个去重处理 Set()`
-      router[methodRouter.method](`/api${clsRouter.path}${methodRouter.path}`, async (req: Request, res: Response) => {
+      const path = `/api${clsRouter.path}${methodRouter.path}`;
+      const routeInfo = `${methodRouter.method}: ${path}`;
+
+      if (routeSet.has(routeInfo)) {
+        console.warn(`【${path}】已经存在，请检查!`);
+      }
+
+      routeSet.add(routeInfo);
+      console.debug(routeInfo);
+
+      router[methodRouter.method](path, async (req: Request, res: Response, next) => {
         const methodName = `${clsRouter.name} -> ${Controller.name} :: ${String(method)}`;
 
         console.log(methodName); // 必要打印的 log
-
-        // 这里返回码常量定义, 错误处理应该还需要处理一下
-        // 成功返回应该也会有 msg
         try {
           const data = await controller[method](req, res);
-          return res.status(200).json({ code: 1, data });
+          return responseHandler({
+            res,
+            data,
+            status: HttpCode.SUCCESS,
+            msg: '操作成功',
+          });
         } catch (error) {
-          console.error(error.message);
-          return res.status(500).json({ code: 0, msg: error.message });
+          next(error);
         }
       });
     }
