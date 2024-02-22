@@ -3,7 +3,6 @@ import { TodoItem } from '@/entity/TodoItem';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
-  // todo: 应该限制数据只能是数字||英文字符||一些特殊符号
   @PrimaryColumn({ name: 'user_id', type: 'varchar' })
   userId: string;
 

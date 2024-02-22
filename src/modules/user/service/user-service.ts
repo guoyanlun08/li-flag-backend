@@ -2,9 +2,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { User } from '@/entity/User';
+import { LoginReqData, RegisterReqData } from '../types/index';
 
 class UserService {
-  public async login(requestData) {
+  public async login(requestData: LoginReqData) {
     const { userId, password } = requestData;
 
     const user = await User.findOne({
@@ -36,7 +37,7 @@ class UserService {
   /**
    * 注册逻辑
    */
-  public async register(requestData: { userId: string; password: string; repectPassword: string }) {
+  public async register(requestData: RegisterReqData) {
     const { userId, password, repectPassword } = requestData;
 
     const isExistedUser = await User.findOne({
