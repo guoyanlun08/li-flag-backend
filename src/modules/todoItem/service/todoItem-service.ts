@@ -50,9 +50,15 @@ class TodoItemService {
   // 修改 item，item内容修改; 已完成; 切换 module; 改变 order
   public async updateTodoItem(updateItemReqData: UpdateItemReqData) {
     const { id, todoValue, isCompleted, module, order } = updateItemReqData;
+
+    if (!id) {
+      throw new MyError(`id未传`, HttpCode.BAD_REQUEST);
+    }
+
     const todoItem = await TodoItem.findOne({
       where: { id },
     });
+
     if (!todoItem) {
       throw new MyError(`${id} todoItem不存在`, HttpCode.NOT_FOUND);
     }
