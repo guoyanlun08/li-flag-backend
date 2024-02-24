@@ -1,6 +1,9 @@
 import { TodoItem } from '@/entity/TodoItem';
+import { User } from '@/entity/User';
+
 import MyError from '@/common/my-error';
 import { AddItemReqData, UpdateItemReqData } from '../types/index';
+import { CallerInfo } from '@/middleware/authMiddleware';
 
 import { HttpCode } from '@/common/http-code';
 
@@ -26,13 +29,19 @@ class TodoItemService {
     };
   }
 
-  public async addTodoItem(addItemReqData: AddItemReqData) {
+  public async addTodoItem(addItemReqData: AddItemReqData, caller: CallerInfo) {
     try {
       const { module, order } = addItemReqData;
+      const { userId } = caller;
+
+      const user = await User.findOne({
+        where: { userId },
+      });
 
       const newTodoItem = await TodoItem.create({
         module,
         order,
+        user,
         todoValue: JSON.stringify(TodoItemService.defaultValue),
       });
 
@@ -48,7 +57,7 @@ class TodoItemService {
   }
 
   // 修改 item，item内容修改; 已完成; 切换 module; 改变 order
-  public async updateTodoItem(updateItemReqData: UpdateItemReqData) {
+  public async updateTodoItem(updateItemReqData: UpdateItemReqData, caller: CallerInfo) {
     const { id, todoValue, isCompleted, module, order } = updateItemReqData;
 
     if (!id) {
@@ -57,10 +66,15 @@ class TodoItemService {
 
     const todoItem = await TodoItem.findOne({
       where: { id },
+      relations: ['user'],
     });
 
     if (!todoItem) {
       throw new MyError(`${id} todoItem不存在`, HttpCode.NOT_FOUND);
+    }
+
+    if (caller.userId !== todoItem.user.userId) {
+      throw new MyError(`${caller.userId} 无法更新该 todoItem`);
     }
 
     if (todoValue) {

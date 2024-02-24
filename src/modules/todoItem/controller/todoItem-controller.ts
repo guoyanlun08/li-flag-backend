@@ -24,8 +24,9 @@ class TodoItemController {
   @router({ method: 'post', path: '/addTodoItem' })
   public async addTodoItem(req: Request, res: Response) {
     const { body: requestData } = req;
+    const { caller } = res.locals;
 
-    const result = await todoItemService.addTodoItem(requestData);
+    const result = await todoItemService.addTodoItem(requestData, caller);
 
     return result;
   }
@@ -34,8 +35,9 @@ class TodoItemController {
   @router({ method: 'post', path: '/updateTodoItem' })
   public async updateTodoItem(req: Request, res: Response) {
     const { body: requsetData } = req;
+    const { caller } = res.locals;
 
-    const result = await todoItemService.updateTodoItem(requsetData);
+    const result = await todoItemService.updateTodoItem(requsetData, caller);
 
     return result;
   }

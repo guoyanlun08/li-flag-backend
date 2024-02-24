@@ -25,7 +25,7 @@ async function bootstrap() {
   app.use(express.urlencoded({ extended: false }));
   app.use(cors());
 
-  // app.use(authMiddleware);
+  app.use(authMiddleware);
 
   app.use('/', router);
   app.use(errorHandlerMiddleware);
