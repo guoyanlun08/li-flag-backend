@@ -6,8 +6,8 @@ export class TodoItem extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'module' })
-  module: string; // 应是枚举 'A' | 'B' | 'C' | 'D'
+  @Column({ name: 'moduleId' })
+  moduleId: string; // 应是枚举 'A' | 'B' | 'C' | 'D'
 
   @Column({ name: 'todo_value', type: 'text' })
   todoValue: string;

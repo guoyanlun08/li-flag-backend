@@ -1,5 +1,5 @@
 export type AddItemReqData = {
-  module: string;
+  moduleId: string;
   order: number;
 };
 
@@ -7,6 +7,6 @@ export type UpdateItemReqData = {
   id: number;
   todoValue?: string;
   isCompleted?: number;
-  module?: string;
+  moduleId?: string;
   order?: number;
 };

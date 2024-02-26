@@ -10,10 +10,10 @@ class TodoItemController {
   // 获取 itemList
   @router({ method: 'get', path: '/getTodoList' })
   public async getTodoList(req: Request, res: Response) {
-    const { module, isCompleted } = req.query as any;
+    const { moduleId, isCompleted } = req.query as any;
 
     const result = await todoItemService.getTodoList({
-      module,
+      moduleId,
       isCompleted: Number(isCompleted),
     });
 
@@ -31,7 +31,7 @@ class TodoItemController {
     return result;
   }
 
-  // 修改 item，item内容修改; 已完成; 切换 module; 改变 order
+  // 修改 item，item内容修改; 已完成; 切换 moduleId; 改变 order
   @router({ method: 'post', path: '/updateTodoItem' })
   public async updateTodoItem(req: Request, res: Response) {
     const { body: requsetData } = req;

@@ -13,11 +13,11 @@ class TodoItemService {
     children: [{ text: '' }],
   };
 
-  public async getTodoList(options: { module?: string; isCompleted?: number }) {
-    const { module, isCompleted } = options;
+  public async getTodoList(options: { moduleId?: string; isCompleted?: number }) {
+    const { moduleId, isCompleted } = options;
 
     const whereCondition = {};
-    if (module) whereCondition['module'] = module;
+    if (moduleId) whereCondition['moduleId'] = moduleId;
     if (!isNaN(isCompleted)) whereCondition['isCompleted'] = isCompleted;
 
     const list = await TodoItem.find({
@@ -31,7 +31,7 @@ class TodoItemService {
 
   public async addTodoItem(addItemReqData: AddItemReqData, caller: CallerInfo) {
     try {
-      const { module, order } = addItemReqData;
+      const { moduleId, order } = addItemReqData;
       const { userId } = caller;
 
       const user = await User.findOne({
@@ -39,7 +39,7 @@ class TodoItemService {
       });
 
       const newTodoItem = await TodoItem.create({
-        module,
+        moduleId,
         order,
         user,
         todoValue: JSON.stringify(TodoItemService.defaultValue),
@@ -56,9 +56,9 @@ class TodoItemService {
     }
   }
 
-  // 修改 item，item内容修改; 已完成; 切换 module; 改变 order
+  // 修改 item，item内容修改; 已完成; 切换 moduleId; 改变 order
   public async updateTodoItem(updateItemReqData: UpdateItemReqData, caller: CallerInfo) {
-    const { id, todoValue, isCompleted, module, order } = updateItemReqData;
+    const { id, todoValue, isCompleted, moduleId, order } = updateItemReqData;
 
     if (!id) {
       throw new MyError(`id未传`, HttpCode.BAD_REQUEST);
@@ -93,7 +93,7 @@ class TodoItemService {
 
     if (isCompleted !== undefined) todoItem.isCompleted = isCompleted;
 
-    if (module) todoItem.module = module;
+    if (moduleId) todoItem.moduleId = moduleId;
 
     if (order) todoItem.order = order;
 
