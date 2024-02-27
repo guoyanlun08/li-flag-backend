@@ -47,8 +47,14 @@ class TodoItemService {
 
       await newTodoItem.save();
 
+      const { id, todoValue, isCompleted } = newTodoItem;
+
       return {
-        id: newTodoItem.id,
+        id,
+        moduleId,
+        isCompleted,
+        order,
+        value: todoValue,
         message: 'todoItem 创建成功',
       };
     } catch (error) {
