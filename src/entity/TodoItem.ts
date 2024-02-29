@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '@/entity/User';
 
 @Entity({ name: 'todo_item' })
@@ -17,6 +17,12 @@ export class TodoItem extends BaseEntity {
 
   @Column({ name: 'order' })
   order: number;
+
+  @CreateDateColumn({ name: 'create_time' })
+  createTime: Date;
+
+  @UpdateDateColumn({ name: 'update_time' })
+  updateTime: Date;
 
   @ManyToOne(() => User, (user) => user.todoItems)
   @JoinColumn({ name: 'user_id' })

@@ -10,11 +10,12 @@ class TodoItemController {
   // 获取 itemList
   @router({ method: 'get', path: '/getTodoList' })
   public async getTodoList(req: Request, res: Response) {
-    const { moduleId, isCompleted } = req.query as any;
+    const { moduleId, isCompleted, today = 0 } = req.query as any;
 
     const result = await todoItemService.getTodoList({
       moduleId,
       isCompleted: Number(isCompleted),
+      today: Number(today),
     });
 
     return result;

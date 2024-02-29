@@ -4,6 +4,7 @@ import { User } from '@/entity/User';
 import MyError from '@/common/my-error';
 import { AddItemReqData, UpdateItemReqData } from '../types/index';
 import { CallerInfo } from '@/middleware/authMiddleware';
+import { isTody } from '@/utils/date';
 
 import { HttpCode } from '@/common/http-code';
 
@@ -13,8 +14,8 @@ class TodoItemService {
     children: [{ text: '' }],
   };
 
-  public async getTodoList(options: { moduleId?: string; isCompleted?: number }) {
-    const { moduleId, isCompleted } = options;
+  public async getTodoList(options: { moduleId?: string; isCompleted?: number; today?: number }) {
+    const { moduleId, isCompleted, today } = options;
 
     const whereCondition = {};
     if (moduleId) whereCondition['moduleId'] = moduleId;
@@ -23,6 +24,15 @@ class TodoItemService {
     const list = await TodoItem.find({
       where: whereCondition,
     });
+
+    if (today) {
+      const todayList = list.filter((item) => isTody(item.createTime));
+      console.log(todayList);
+
+      return {
+        list: todayList,
+      };
+    }
 
     return {
       list,
