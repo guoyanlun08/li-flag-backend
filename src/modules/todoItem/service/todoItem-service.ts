@@ -9,10 +9,12 @@ import { isTody } from '@/utils/date';
 import { HttpCode } from '@/common/http-code';
 
 class TodoItemService {
-  static defaultValue = {
-    type: 'paragraph',
-    children: [{ text: '' }],
-  };
+  static defaultValue = [
+    {
+      type: 'paragraph',
+      children: [{ text: '' }],
+    },
+  ];
 
   public async getTodoList(options: { moduleId?: string; isCompleted?: number; today?: number }) {
     const { moduleId, isCompleted, today } = options;
@@ -64,7 +66,7 @@ class TodoItemService {
         moduleId,
         isCompleted,
         order,
-        value: todoValue,
+        todoValue,
         message: 'todoItem 创建成功',
       };
     } catch (error) {
@@ -93,6 +95,7 @@ class TodoItemService {
       throw new MyError(`${caller.userId} 无法更新该 todoItem`);
     }
 
+    // item => value 文本的改变
     if (todoValue) {
       let updateTodoValue;
       try {
@@ -101,16 +104,19 @@ class TodoItemService {
         throw new MyError('todoValue error: 传参不是 json', HttpCode.BAD_REQUEST);
       }
 
-      if (!updateTodoValue.hasOwnProperty('type') || !updateTodoValue.hasOwnProperty('children')) {
+      if (!updateTodoValue[0].hasOwnProperty('type') || !updateTodoValue[0].hasOwnProperty('children')) {
         throw new MyError('todoValue 结构不对应，外层应只有 type 和 children', HttpCode.BAD_REQUEST);
       }
       todoItem.todoValue = todoValue;
     }
 
+    // item => isCompleted 是否已完成的改变
     if (isCompleted !== undefined) todoItem.isCompleted = isCompleted;
 
+    // item => moduleId 模块的改变
     if (moduleId) todoItem.moduleId = moduleId;
 
+    // item => order 顺序的改变
     if (order) todoItem.order = order;
 
     await todoItem.save();
