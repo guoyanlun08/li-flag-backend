@@ -2,7 +2,7 @@ import { TodoItem } from '@/entity/TodoItem';
 import { User } from '@/entity/User';
 
 import MyError from '@/common/my-error';
-import { AddItemReqData, UpdateItemReqData } from '../types/index';
+import { AddItemReqData, UpdateItemReqData, updateTodoModuleReqData } from '../types/index';
 import { CallerInfo } from '@/middleware/authMiddleware';
 import { isTody } from '@/utils/date';
 
@@ -138,11 +138,14 @@ class TodoItemService {
   }
 
   // 拖拽后，更新 module todoList的 order
-  public async updateTodoModule(updateTodoModule) {
+  public async updateTodoModule(updateTodoModuleReqData: updateTodoModuleReqData) {
     try {
-      const { listData } = updateTodoModule;
+      const { listData } = updateTodoModuleReqData;
+      console.log(listData);
 
-      await Promise.all(
+      const { moduleId } = listData[0];
+
+      const list = await Promise.all(
         listData.map(async (item, index: number) => {
           const todoItem = await TodoItem.findOneBy({
             id: item.id,
@@ -150,10 +153,13 @@ class TodoItemService {
 
           todoItem.order = index;
           await todoItem.save();
+          return todoItem;
         }),
       );
+
       return {
-        message: '更新 module成功',
+        list,
+        message: `更新 module: ${moduleId}成功`,
       };
     } catch (error) {
       throw new MyError('updateTodoModule 更新失败');
