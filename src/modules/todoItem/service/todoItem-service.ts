@@ -136,6 +136,29 @@ class TodoItemService {
       message: `id: ${id} 删除成功`,
     };
   }
+
+  // 拖拽后，更新 module todoList的 order
+  public async updateTodoModule(updateTodoModule) {
+    try {
+      const { listData } = updateTodoModule;
+
+      await Promise.all(
+        listData.map(async (item, index: number) => {
+          const todoItem = await TodoItem.findOneBy({
+            id: item.id,
+          });
+
+          todoItem.order = index;
+          await todoItem.save();
+        }),
+      );
+      return {
+        message: '更新 module成功',
+      };
+    } catch (error) {
+      throw new MyError('updateTodoModule 更新失败');
+    }
+  }
 }
 
 export default TodoItemService;

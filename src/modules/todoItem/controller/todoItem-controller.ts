@@ -52,6 +52,14 @@ class TodoItemController {
 
     return result;
   }
+
+  @router({ method: 'put', path: '/updateTodoModule' })
+  public async updateTodoModule(req: Request, res: Response) {
+    const { body: requestData } = req;
+    const result = await todoItemService.updateTodoModule(requestData);
+
+    return result;
+  }
 }
 
 export default TodoItemController;
