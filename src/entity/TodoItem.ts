@@ -13,7 +13,7 @@ export class TodoItem extends BaseEntity {
   todoValue: string;
 
   @Column({ name: 'is_completed', type: 'tinyint', default: 0, comment: '0 代表未完成，1 代表已完成' })
-  isCompleted: number;
+  completed: number;
 
   @Column({ name: 'order' })
   order: number;

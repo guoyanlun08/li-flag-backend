@@ -16,12 +16,12 @@ class TodoItemService {
     },
   ];
 
-  public async getTodoList(options: { moduleId?: string; isCompleted?: number; today?: number }) {
-    const { moduleId, isCompleted, today } = options;
+  public async getTodoList(options: { moduleId?: string; completed?: number; today?: number }) {
+    const { moduleId, completed, today } = options;
 
     const whereCondition = {};
     if (moduleId) whereCondition['moduleId'] = moduleId;
-    if (!isNaN(isCompleted)) whereCondition['isCompleted'] = isCompleted;
+    if (!isNaN(completed)) whereCondition['completed'] = completed;
 
     const list = await TodoItem.find({
       where: whereCondition,
@@ -29,7 +29,6 @@ class TodoItemService {
 
     if (today) {
       const todayList = list.filter((item) => isTody(item.createTime));
-      console.log(todayList);
 
       return {
         list: todayList,
@@ -59,12 +58,12 @@ class TodoItemService {
 
       await newTodoItem.save();
 
-      const { id, todoValue, isCompleted } = newTodoItem;
+      const { id, todoValue, completed } = newTodoItem;
 
       return {
         id,
         moduleId,
-        isCompleted,
+        completed,
         order,
         todoValue,
         message: 'todoItem 创建成功',
@@ -76,7 +75,7 @@ class TodoItemService {
 
   // 修改 item，item内容修改; 已完成; 切换 moduleId; 改变 order
   public async updateTodoItem(updateItemReqData: UpdateItemReqData, caller: CallerInfo) {
-    const { id, todoValue, isCompleted, moduleId, order } = updateItemReqData;
+    const { id, todoValue, completed, moduleId, order } = updateItemReqData;
 
     if (!id) {
       throw new MyError(`id未传`, HttpCode.BAD_REQUEST);
@@ -110,8 +109,8 @@ class TodoItemService {
       todoItem.todoValue = todoValue;
     }
 
-    // item => isCompleted 是否已完成的改变
-    if (isCompleted !== undefined) todoItem.isCompleted = isCompleted;
+    // item => completed 是否已完成的改变
+    if (completed !== undefined) todoItem.completed = completed;
 
     // item => moduleId 模块的改变
     if (moduleId) todoItem.moduleId = moduleId;
