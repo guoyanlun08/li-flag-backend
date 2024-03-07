@@ -18,10 +18,10 @@ export class TodoItem extends BaseEntity {
   @Column({ name: 'order' })
   order: number;
 
-  @CreateDateColumn({ name: 'create_time' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 
   @ManyToOne(() => User, (user) => user.todoItems)
