@@ -13,6 +13,12 @@ export type UpdateItemReqData = {
   order?: number;
 };
 
-export type updateTodoModuleReqData = {
-  listData: TodoItem[];
+type dragItem = {
+  moduleId: string;
+  index: number;
+};
+
+export type updateTodoOrderAfterDragReqData = {
+  source: dragItem;
+  destination: dragItem;
 };

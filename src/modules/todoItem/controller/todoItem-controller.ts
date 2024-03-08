@@ -53,10 +53,10 @@ class TodoItemController {
     return result;
   }
 
-  @router({ method: 'put', path: '/updateTodoModule' })
-  public async updateTodoModule(req: Request, res: Response) {
+  @router({ method: 'put', path: '/updateTodoOrderAfterDrag' })
+  public async updateTodoOrderAfterDrag(req: Request, res: Response) {
     const { body: requestData } = req;
-    const result = await todoItemService.updateTodoModule(requestData);
+    const result = await todoItemService.updateTodoOrderAfterDrag(requestData);
 
     return result;
   }
