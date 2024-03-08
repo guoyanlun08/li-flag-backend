@@ -58,15 +58,11 @@ class TodoItemService {
 
       await newTodoItem.save();
 
-      const { id, todoValue, completed } = newTodoItem;
+      const respNewItem = { ...newTodoItem };
+      delete respNewItem.user;
 
       return {
-        id,
-        moduleId,
-        completed,
-        order,
-        todoValue,
-        message: 'todoItem 创建成功',
+        newTodoItem: respNewItem,
       };
     } catch (error) {
       throw new MyError('新增 todoItem失败');
