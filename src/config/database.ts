@@ -12,6 +12,7 @@ const AppDataSource = new DataSource({
   database: 'li-flag',
   synchronize: true, // 和数据库同步，推荐是说只能在开发环境用(后期处理)
   entities: [User, TodoItem],
+  dateStrings: true,
 });
 
 export default AppDataSource;

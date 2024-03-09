@@ -14,6 +14,7 @@ export type UpdateItemReqData = {
 };
 
 type dragItem = {
+  id: number;
   moduleId: string;
   index: number;
 };

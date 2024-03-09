@@ -1,8 +1,10 @@
+import moment from 'moment';
+import { Between } from 'typeorm';
 import { TodoItem } from '@/entity/TodoItem';
 import { User } from '@/entity/User';
 
 import MyError from '@/common/my-error';
-import { AddItemReqData, UpdateItemReqData, updateTodoOrderAfterDragReqData, updateTodoOrderAfterDragOrderReqData } from '../types/index';
+import { AddItemReqData, UpdateItemReqData, updateTodoOrderAfterDragReqData } from '../types/index';
 import { CallerInfo } from '@/middleware/authMiddleware';
 import { isTody } from '@/utils/date';
 
@@ -22,18 +24,13 @@ class TodoItemService {
     const whereCondition = {};
     if (moduleId) whereCondition['moduleId'] = moduleId;
     if (!isNaN(completed)) whereCondition['completed'] = completed;
+    if (today) {
+      whereCondition['createTime'] = Between(moment().startOf('day').toDate(), moment().endOf('day').toDate());
+    }
 
     const list = await TodoItem.find({
       where: whereCondition,
     });
-
-    if (today) {
-      const todayList = list.filter((item) => isTody(item.createTime));
-
-      return {
-        list: todayList,
-      };
-    }
 
     return {
       list,
@@ -138,26 +135,50 @@ class TodoItemService {
     try {
       const { source, destination } = updateTodoOrderAfterDragReqData;
 
+      // 同个 module 拖拽逻辑
       if (source.moduleId === destination.moduleId) {
+        const [sourceTodoItem, destinationTodoItem] = await Promise.all([
+          TodoItem.findOneBy({ id: source.id }),
+          TodoItem.findOneBy({ id: destination.id }),
+        ]);
+        // 交换 order
+        sourceTodoItem.order = destination.index;
+        destinationTodoItem.order = source.index;
+
+        sourceTodoItem.save();
+        destinationTodoItem.save();
+
+        return {
+          sourceItem: sourceTodoItem,
+          destinationItem: destinationTodoItem,
+        };
       }
 
-      // const { listData } = updateTodoOrderAfterDragReqData;
-      // console.log(listData);
-      // const { moduleId } = listData[0];
-      // const list = await Promise.all(
-      //   listData.map(async (item, index: number) => {
-      //     const todoItem = await TodoItem.findOneBy({
-      //       id: item.id,
-      //     });
-      //     todoItem.order = index;
-      //     await todoItem.save();
-      //     return todoItem;
-      //   }),
-      // );
-      // return {
-      //   list,
-      //   message: `更新 module: ${moduleId}成功`,
-      // };
+      // 不同 module 拖拽逻辑
+      const [dragTodoItem, sourceModuleList, destinationModuleList] = await Promise.all([
+        TodoItem.findOneBy({ id: source.id }),
+        TodoItem.findBy({
+          moduleId: source.moduleId,
+          createTime: Between(moment().startOf('day').toDate(), moment().endOf('day').toDate()),
+        }),
+        TodoItem.findBy({
+          moduleId: destination.moduleId,
+          createTime: Between(moment().startOf('day').toDate(), moment().endOf('day').toDate()),
+        }),
+      ]);
+
+      // 更换拖拽项 module
+      dragTodoItem.moduleId = destination.moduleId;
+      destinationModuleList.splice(destination.index, 0, dragTodoItem);
+      destinationModuleList.forEach((item, index) => {
+        item.order = index;
+      });
+
+      TodoItem.save(destinationModuleList);
+
+      return {
+        destinationList: destinationModuleList,
+      };
     } catch (error) {
       throw new MyError('updateTodoOrderAfterDrag 更新失败');
     }
