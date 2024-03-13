@@ -1,4 +1,12 @@
-import type { TodoItem } from '@/entity/TodoItem';
+export type getItemListReqData = {
+  moduleId?: string;
+  completed?: number;
+  today?: number;
+  startTime?: string;
+  endTime?: string;
+  isSkip?: number;
+  page?: number;
+};
 
 export type AddItemReqData = {
   moduleId: string;

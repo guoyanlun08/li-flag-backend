@@ -4,9 +4,8 @@ import { TodoItem } from '@/entity/TodoItem';
 import { User } from '@/entity/User';
 
 import MyError from '@/common/my-error';
-import { AddItemReqData, UpdateItemReqData, updateTodoOrderAfterDragReqData } from '../types/index';
+import { getItemListReqData, AddItemReqData, UpdateItemReqData, updateTodoOrderAfterDragReqData } from '../types/index';
 import { CallerInfo } from '@/middleware/authMiddleware';
-import { isTody } from '@/utils/date';
 
 import { HttpCode } from '@/common/http-code';
 
@@ -18,22 +17,34 @@ class TodoItemService {
     },
   ];
 
-  public async getTodoList(options: { moduleId?: string; completed?: number; today?: number }) {
-    const { moduleId, completed, today } = options;
+  public async getTodoList(options: getItemListReqData) {
+    const { moduleId, completed, today, startTime, endTime, isSkip, page } = options;
 
+    if ((startTime && !endTime) || (!startTime && endTime) || (today && (startTime || endTime))) {
+      throw new MyError('startTime, endTime传参有问题', HttpCode.BAD_REQUEST);
+    }
+
+    const skipCondition = isSkip && page;
     const whereCondition = {};
+
     if (moduleId) whereCondition['moduleId'] = moduleId;
     if (!isNaN(completed)) whereCondition['completed'] = completed;
     if (today) {
-      whereCondition['createTime'] = Between(moment().startOf('day').toDate(), moment().endOf('day').toDate());
+      whereCondition['createTime'] = Between(moment().startOf('day').format(), moment().endOf('day').format());
+    }
+    if (startTime && endTime) {
+      whereCondition['createTime'] = Between(startTime, endTime);
     }
 
     const list = await TodoItem.find({
       where: whereCondition,
+      skip: skipCondition ? page : 0,
+      take: skipCondition ? 10 : undefined,
     });
 
     return {
       list,
+      count: list.length,
     };
   }
 
