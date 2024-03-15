@@ -33,3 +33,4 @@
 | ~~设置一下路径别名，'@/....'~~                                                                    | allen  | allen  |
 | ~~feat: 接口返回需要封装一下，且定义一下数据格式。res.status().json(). 还有一些常量的定义工程化~~ | allen  | allen  |
 | 接口判断 userId，应该有通用的办法，查一下                                                         | allen  | allen  |
+| 单例登录实现                                                                                      | allen  | allen  |
