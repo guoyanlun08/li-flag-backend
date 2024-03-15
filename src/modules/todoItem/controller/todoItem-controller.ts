@@ -11,16 +11,20 @@ class TodoItemController {
   @router({ method: 'get', path: '/getTodoList' })
   public async getTodoList(req: Request, res: Response) {
     const { moduleId, completed, today = 0, startTime, endTime, isSkip, page } = req.query as any;
+    const { caller } = res.locals;
 
-    const result = await todoItemService.getTodoList({
-      moduleId,
-      startTime,
-      endTime,
-      isSkip: Number(isSkip),
-      page: Number(page),
-      completed: Number(completed),
-      today: Number(today),
-    });
+    const result = await todoItemService.getTodoList(
+      {
+        moduleId,
+        startTime,
+        endTime,
+        isSkip: Number(isSkip),
+        page: Number(page),
+        completed: Number(completed),
+        today: Number(today),
+      },
+      caller,
+    );
 
     return result;
   }

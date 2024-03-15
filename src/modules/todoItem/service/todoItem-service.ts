@@ -17,15 +17,20 @@ class TodoItemService {
     },
   ];
 
-  public async getTodoList(options: getItemListReqData) {
+  public async getTodoList(options: getItemListReqData, caller: CallerInfo) {
     const { moduleId, completed, today, startTime, endTime, isSkip, page } = options;
+    const { userId } = caller;
 
     if ((startTime && !endTime) || (!startTime && endTime) || (today && (startTime || endTime))) {
       throw new MyError('startTime, endTime传参有问题', HttpCode.BAD_REQUEST);
     }
 
     const skipCondition = isSkip && page;
-    const whereCondition = {};
+    const whereCondition = {
+      user: {
+        userId,
+      },
+    };
 
     if (moduleId) whereCondition['moduleId'] = moduleId;
     if (!isNaN(completed)) whereCondition['completed'] = completed;
