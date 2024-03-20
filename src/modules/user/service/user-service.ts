@@ -39,7 +39,7 @@ class UserService {
    * 注册逻辑
    */
   public async register(requestData: RegisterReqData) {
-    const { userId, password, repectPassword } = requestData;
+    const { userId, password, repeatPassword } = requestData;
 
     const isExistedUser = await User.findOne({
       where: { userId },
@@ -49,7 +49,7 @@ class UserService {
       throw new MyError('账号已存在');
     }
 
-    if (password !== repectPassword) {
+    if (password !== repeatPassword) {
       throw new MyError('密码不一致');
     }
 

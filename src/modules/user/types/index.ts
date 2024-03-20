@@ -4,5 +4,5 @@ export type LoginReqData = {
 };
 
 export type RegisterReqData = {
-  repectPassword: string;
+  repeatPassword: string;
 } & LoginReqData;
