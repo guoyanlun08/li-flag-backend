@@ -15,13 +15,13 @@ export class User extends BaseEntity {
   @Column({ name: 'avatar_path', default: '' })
   avatarPath: string;
 
-  @Column({ name: 'last_online_time', default: null })
+  @Column({ name: 'last_online_time', type: 'timestamp', default: null })
   lastOnlineTime: Date;
 
-  @CreateDateColumn({ name: 'create_time' })
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
-  @UpdateDateColumn({ name: 'update_time' })
+  @UpdateDateColumn({ name: 'update_time', type: 'timestamp' })
   updateTime: Date;
 
   @OneToMany(() => TodoItem, (todoItem) => todoItem.user)

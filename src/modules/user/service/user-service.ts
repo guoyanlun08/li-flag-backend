@@ -29,10 +29,12 @@ class UserService {
     const token = jwt.sign({ userId: user.userId }, 'login-token-key', {
       expiresIn: '14 days',
     });
+    const userInfo = { ...user };
+    delete userInfo.password;
 
     return {
       token,
-      user,
+      userInfo,
     };
   }
   /**
