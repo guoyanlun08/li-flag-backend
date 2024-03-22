@@ -10,13 +10,15 @@ import MyError from '@/common/my-error';
 export type CallerInfo = {
   userId: string;
 };
+// 可以忽略 token校验的接口
+const whiteUrl = ['/api/user/login', '/api/user/register'];
 
 function authMiddleware(req: Request, res: Response, next) {
-  const modulePath = req.url.split('/')[2];
   const token = req.headers['authorization'];
+  console.log(req.url);
 
   // 登录模块不需要。后续可能还会有跳过 token验证的接口
-  if (modulePath === 'user') {
+  if (whiteUrl.some((url) => url === req.url)) {
     return next();
   }
 

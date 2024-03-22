@@ -24,6 +24,15 @@ class UserController {
 
     return result;
   }
+
+  @router({ method: 'get', path: '/getUserInfo' })
+  public async getUserInfo(req: Request, res: Response) {
+    const { caller } = res.locals;
+
+    const result = await userService.getUserInfo(caller);
+
+    return result;
+  }
 }
 
 export default UserController;

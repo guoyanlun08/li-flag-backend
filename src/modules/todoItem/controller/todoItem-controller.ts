@@ -29,7 +29,7 @@ class TodoItemController {
     return result;
   }
 
-  // 新增 todoitem
+  // 新增 todoItem
   @router({ method: 'post', path: '/addTodoItem' })
   public async addTodoItem(req: Request, res: Response) {
     const { body: requestData } = req;

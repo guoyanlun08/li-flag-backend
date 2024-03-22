@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '@/entity/User';
 import MyError from '@/common/my-error';
 import { LoginReqData, RegisterReqData } from '../types/index';
+import { CallerInfo } from '@/middleware/authMiddleware';
 
 class UserService {
   public async login(requestData: LoginReqData) {
@@ -37,9 +38,7 @@ class UserService {
       userInfo,
     };
   }
-  /**
-   * 注册逻辑
-   */
+  /** 注册逻辑 */
   public async register(requestData: RegisterReqData) {
     const { userId, password, repeatPassword } = requestData;
 
@@ -65,6 +64,19 @@ class UserService {
 
     return {
       message: '注册成功',
+    };
+  }
+
+  /** 获取用户信息 */
+  public async getUserInfo(caller: CallerInfo) {
+    const { userId } = caller;
+
+    const user = await User.findOneBy({ userId });
+    const userInfo = { ...user };
+
+    delete userInfo.password;
+    return {
+      userInfo,
     };
   }
 }
