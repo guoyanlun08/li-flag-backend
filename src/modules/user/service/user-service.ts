@@ -3,10 +3,11 @@ import jwt from 'jsonwebtoken';
 
 import { User } from '@/entity/User';
 import MyError from '@/common/my-error';
-import { LoginReqData, RegisterReqData } from '../types/index';
+import { LoginReqData, RegisterReqData, UpdateUserInfoReqData } from '../types/index';
 import { CallerInfo } from '@/middleware/authMiddleware';
 
 class UserService {
+  /** 登录 */
   public async login(requestData: LoginReqData) {
     const { userId, password } = requestData;
 
@@ -77,6 +78,31 @@ class UserService {
     delete userInfo.password;
     return {
       userInfo,
+    };
+  }
+
+  /** 更新用户信息 */
+  public async updateUserInfo(requestData: UpdateUserInfoReqData) {
+    const { userId, ...updateValue } = requestData;
+    console.log('updateValue==', updateValue);
+
+    const user = await User.findOne({
+      where: { userId },
+    });
+
+    if (!user) {
+      throw new MyError('未传递 userId');
+    }
+
+    delete updateValue.repeatPassword;
+
+    const { affected } = await User.update(user.userId, updateValue);
+    if (!affected) {
+      throw new MyError(`更新 userId: ${userId} 失败`);
+    }
+
+    return {
+      message: `更新用户: ${userId} 成功`,
     };
   }
 }

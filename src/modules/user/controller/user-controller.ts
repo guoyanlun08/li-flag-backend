@@ -33,6 +33,15 @@ class UserController {
 
     return result;
   }
+
+  @router({ method: 'put', path: '/updateUserInfo' })
+  public async updateUserInfo(req: Request, res: Response) {
+    const { body: requestData } = req;
+
+    const result = await userService.updateUserInfo(requestData);
+
+    return result;
+  }
 }
 
 export default UserController;
