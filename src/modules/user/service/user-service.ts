@@ -83,8 +83,7 @@ class UserService {
 
   /** 更新用户信息 */
   public async updateUserInfo(requestData: UpdateUserInfoReqData) {
-    const { userId, ...updateValue } = requestData;
-    console.log('updateValue==', updateValue);
+    const { userId, password, repeatPassword, ...updateValue } = requestData;
 
     const user = await User.findOne({
       where: { userId },
@@ -94,12 +93,16 @@ class UserService {
       throw new MyError('未传递 userId');
     }
 
-    delete updateValue.repeatPassword;
-
-    const { affected } = await User.update(user.userId, updateValue);
-    if (!affected) {
-      throw new MyError(`更新 userId: ${userId} 失败`);
+    // 密码修改 -- 目前未做密码校验，看后续需不需要
+    if (password && repeatPassword) {
+      if (password === repeatPassword) {
+        user.password = await bcrypt.hash(password, 10);
+      } else {
+        throw new MyError('密码不相等');
+      }
     }
+    User.merge(user, { ...updateValue });
+    await user.save();
 
     return {
       message: `更新用户: ${userId} 成功`,
